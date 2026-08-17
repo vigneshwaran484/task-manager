@@ -37,9 +37,9 @@ jobs:
         working-directory: ./frontend
         run: npm ci
 
-      - name: Frontend Lint (ESLint)
+      - name: Frontend Lint
         working-directory: ./frontend
-        run: npx eslint .
+        run: npm run lint
 
   # ── 2. SAST & Secret Scanning ──────────────────────────────────────────────
   security-sast:
