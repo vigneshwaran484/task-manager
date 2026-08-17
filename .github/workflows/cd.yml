@@ -80,14 +80,14 @@ jobs:
       - name: Update Backend Container App
         run: |
           az containerapp update \
-            --name ca-backend-sectasks \
+            --name ca-backend-taskmanager \
             --resource-group ${{ env.RG_NAME }} \
             --image ${{ env.ACR_SERVER }}/backend:${{ github.sha }}
 
       - name: Update Frontend Container App
         run: |
           az containerapp update \
-            --name ca-frontend-sectasks \
+            --name ca-frontend-taskmanager \
             --resource-group ${{ env.RG_NAME }} \
             --image ${{ env.ACR_SERVER }}/frontend:${{ github.sha }}
 

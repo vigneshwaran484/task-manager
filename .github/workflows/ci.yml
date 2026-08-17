@@ -115,7 +115,7 @@ jobs:
           context: ./backend
           push: false
           load: true
-          tags: securetasks-backend:test
+          tags: task-manager-backend:test
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -123,7 +123,7 @@ jobs:
       - name: Scan Backend Image (Trivy)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'securetasks-backend:test'
+          image-ref: 'task-manager-backend:test'
           format: 'table'
           exit-code: '1' # Fail pipeline if vulnerabilities found
           ignore-unfixed: true # Don't fail if there's no patch available yet
@@ -137,7 +137,7 @@ jobs:
           context: ./frontend
           push: false
           load: true
-          tags: securetasks-frontend:test
+          tags: task-manager-frontend:test
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -145,7 +145,7 @@ jobs:
       - name: Scan Frontend Image (Trivy)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'securetasks-frontend:test'
+          image-ref: 'task-manager-frontend:test'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true

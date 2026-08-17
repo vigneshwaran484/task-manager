@@ -30,7 +30,7 @@ export function Navbar() {
             className="font-semibold text-base tracking-tight"
             style={{ color: 'var(--color-text-primary)' }}
           >
-            SecureTasks
+            Task Manager
           </span>
         </div>
 

@@ -1,6 +1,6 @@
 variable "project_name" {
   type        = string
-  default     = "sectasks"
+  default     = "taskmgr"
   description = "Base name for all resources (must be globally unique for ACR/KeyVault if not randomized)"
 }
 

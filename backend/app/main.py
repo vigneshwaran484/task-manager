@@ -18,7 +18,7 @@ def create_app() -> FastAPI:
     settings = get_settings()
 
     app = FastAPI(
-        title="SecureTasks API",
+        title="Task Manager API",
         version="0.1.0",
         # Disable docs in production — reduces attack surface
         docs_url="/docs" if settings.APP_ENV == "development" else None,

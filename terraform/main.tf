@@ -16,7 +16,7 @@ resource "azurerm_resource_group" "rg" {
 
   tags = {
     Environment = var.environment
-    Project     = "SecureTasks"
+    Project     = "Task Manager"
   }
 }
 

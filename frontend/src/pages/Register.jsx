@@ -59,7 +59,7 @@ export default function Register() {
           Create Account
         </h1>
         <p className="text-sm text-[--color-text-muted]">
-          Join SecureTasks to manage your work
+          Join Task Manager to manage your work
         </p>
       </div>
 

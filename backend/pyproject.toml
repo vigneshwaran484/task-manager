@@ -1,7 +1,7 @@
 [project]
-name = "securetasks-backend"
+name = "task-manager-backend"
 version = "0.1.0"
-description = "SecureTasks FastAPI backend"
+description = "Task Manager FastAPI backend"
 requires-python = ">=3.12"
 dependencies = [
     # Web framework

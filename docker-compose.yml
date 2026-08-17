@@ -4,15 +4,15 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: securetasks
+      POSTGRES_USER: taskmanager
       POSTGRES_PASSWORD: changeme     # local-only, never use in prod
-      POSTGRES_DB: securetasks
+      POSTGRES_DB: taskmanager
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U securetasks"]
+      test: ["CMD-SHELL", "pg_isready -U taskmanager"]
       interval: 10s
       timeout: 5s
       retries: 5
