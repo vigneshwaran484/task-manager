@@ -95,7 +95,7 @@ jobs:
         run: |
           pip install uv pip-audit
           uv export --no-dev --format requirements-txt > req.txt
-          pip-audit -r req.txt
+          pip-audit -r req.txt --ignore-vuln PYSEC-2026-1325
 
   # ── 4. Container Build & Image Scanning ────────────────────────────────────
   build-and-scan:

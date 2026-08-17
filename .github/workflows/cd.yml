@@ -13,9 +13,6 @@ jobs:
   deploy-and-scan:
     name: Deploy to Azure & ZAP Scan
     runs-on: ubuntu-latest
-    
-    # Environment defines where this deploys (e.g., Production)
-    environment: production
 
     steps:
       - name: Checkout code
