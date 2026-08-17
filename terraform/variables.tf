@@ -6,8 +6,8 @@ variable "project_name" {
 
 variable "location" {
   type        = string
-  default     = "eastus"
-  description = "Azure region (East US usually has good student quota)"
+  default     = "centralindia"
+  description = "Azure region (Central India or South India are often permitted for Student subscriptions in your region)"
 }
 
 variable "db_admin_username" {
