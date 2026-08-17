@@ -1,6 +1,6 @@
 # ── Random string for globally unique names ───────────────────────────────
 resource "random_string" "suffix" {
-  length  = 5
+  length  = 6
   special = false
   upper   = false
 }
