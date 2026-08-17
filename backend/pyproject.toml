@@ -39,6 +39,8 @@ select = ["E", "F", "I", "N", "S", "B", "UP"]
 ignore = [
     "S101",  # allow assert in tests
     "S105",  # hardcoded password false positives in auth helpers
+    "B008",  # Depends() in FastAPI function defaults
+    "E501",  # Line length
 ]
 
 [tool.ruff.lint.per-file-ignores]

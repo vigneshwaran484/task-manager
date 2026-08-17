@@ -8,7 +8,6 @@ they know the UUID, because the DB query enforces ownership.
 """
 
 import uuid
-from http import HTTPStatus
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select

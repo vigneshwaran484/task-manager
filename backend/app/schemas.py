@@ -11,7 +11,6 @@ from pydantic import BaseModel, EmailStr, Field, field_validator
 
 from app.models import TaskPriority, TaskStatus
 
-
 # ── Auth ──────────────────────────────────────────────────────────────────────
 
 class UserRegister(BaseModel):

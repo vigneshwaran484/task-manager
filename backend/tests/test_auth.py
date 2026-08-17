@@ -4,10 +4,11 @@ Uses httpx AsyncClient with the FastAPI test transport — no real DB needed
 for unit-level tests; swap the dependency for real tests.
 """
 
+from datetime import UTC
+from unittest.mock import AsyncMock, patch
+
 import pytest
 from httpx import ASGITransport, AsyncClient
-from unittest.mock import AsyncMock, patch
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.main import app
 
@@ -26,8 +27,8 @@ async def test_register_returns_201():
     mock_user.id = "00000000-0000-0000-0000-000000000001"
     mock_user.email = "test@example.com"
     mock_user.is_active = True
-    from datetime import datetime, timezone
-    mock_user.created_at = datetime.now(timezone.utc)
+    from datetime import datetime
+    mock_user.created_at = datetime.now(UTC)
 
     with patch("app.routers.auth.get_db") as mock_get_db:
         # Minimal smoke test — full integration tests require a test DB
@@ -37,9 +38,10 @@ async def test_register_returns_201():
 @pytest.mark.asyncio
 async def test_weak_password_rejected():
     """Password without uppercase or digit should fail schema validation."""
-    from app.schemas import UserRegister
     import pytest
     from pydantic import ValidationError
+
+    from app.schemas import UserRegister
 
     with pytest.raises(ValidationError):
         UserRegister(email="a@b.com", password="alllowercase")
@@ -47,8 +49,9 @@ async def test_weak_password_rejected():
 
 @pytest.mark.asyncio
 async def test_short_password_rejected():
-    from app.schemas import UserRegister
     from pydantic import ValidationError
+
+    from app.schemas import UserRegister
 
     with pytest.raises(ValidationError):
         UserRegister(email="a@b.com", password="Sh0rt")

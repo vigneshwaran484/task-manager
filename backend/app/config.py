@@ -6,6 +6,7 @@ references set on the App Service / Container App configuration.
 """
 
 from functools import lru_cache
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 

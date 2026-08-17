@@ -8,14 +8,15 @@ import asyncio
 import os
 from logging.config import fileConfig
 
-from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import create_async_engine
 
-# Import our Base so Alembic can autogenerate migrations
-from app.database import Base
 # Import all models to register them with Base.metadata
 import app.models  # noqa: F401
+from alembic import context
+
+# Import our Base so Alembic can autogenerate migrations
+from app.database import Base
 
 config = context.config
 if config.config_file_name is not None:
