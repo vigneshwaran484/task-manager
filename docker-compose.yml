@@ -1,0 +1,54 @@
+services:
+  # ── PostgreSQL ──────────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: securetasks
+      POSTGRES_PASSWORD: changeme     # local-only, never use in prod
+      POSTGRES_DB: securetasks
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U securetasks"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Backend ─────────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      target: runtime           # use the multi-stage runtime layer
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env          # git-ignored; copy from .env.example
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    develop:
+      watch:
+        # Hot-reload app code changes without rebuilding the image
+        - action: sync
+          path: ./backend/app
+          target: /app/app
+
+  # ── Frontend ────────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      target: runtime
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000
+
+volumes:
+  postgres_data:

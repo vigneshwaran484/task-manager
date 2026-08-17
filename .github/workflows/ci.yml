@@ -1,0 +1,153 @@
+name: CI Pipeline (DevSecOps)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # ── 1. Code Quality & Linting ──────────────────────────────────────────────
+  lint:
+    name: Lint & Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      
+      - name: Install uv & ruff
+        run: pip install uv ruff
+
+      - name: Backend Lint (Ruff)
+        working-directory: ./backend
+        run: ruff check .
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: 'npm'
+          cache-dependency-path: './frontend/package-lock.json'
+
+      - name: Install Frontend Deps
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Frontend Lint (ESLint)
+        working-directory: ./frontend
+        run: npx eslint .
+
+  # ── 2. SAST & Secret Scanning ──────────────────────────────────────────────
+  security-sast:
+    name: Static Analysis & Secrets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Needed for gitleaks to scan commit history
+
+      # Gitleaks: Scans for hardcoded secrets, API keys, and passwords in code
+      - name: Gitleaks Secret Scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: false # Don't clutter artifacts on success
+          GITLEAKS_ENABLE_SUMMARY: true
+
+      # Semgrep: Scans for complex security anti-patterns (e.g. SQLi, XSS)
+      - name: Semgrep SAST
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: "p/default"
+          generateSarif: "1"
+
+      # Upload SARIF file for GitHub Advanced Security Dashboard (if enabled)
+      - name: Upload SARIF report
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: semgrep.sarif
+
+  # ── 3. SCA (Software Composition Analysis) ─────────────────────────────────
+  security-sca:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # npm audit for frontend dependencies
+      - name: Frontend Dependency Audit
+        working-directory: ./frontend
+        run: npm audit --audit-level=high
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # pip-audit checks backend deps against the Python Packaging Advisory Database
+      - name: Backend Dependency Audit
+        working-directory: ./backend
+        run: |
+          pip install uv pip-audit
+          uv export --no-dev --format requirements-txt > req.txt
+          pip-audit -r req.txt
+
+  # ── 4. Container Build & Image Scanning ────────────────────────────────────
+  build-and-scan:
+    name: Build & Scan Containers
+    needs: [lint, security-sast, security-sca] # Only build if tests pass
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Build Backend Image (Local only, not pushing to ACR yet)
+      - name: Build Backend Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: false
+          load: true
+          tags: securetasks-backend:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Trivy: Scans the built Docker image for OS-level vulnerabilities
+      - name: Scan Backend Image (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'securetasks-backend:test'
+          format: 'table'
+          exit-code: '1' # Fail pipeline if vulnerabilities found
+          ignore-unfixed: true # Don't fail if there's no patch available yet
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+      # Build Frontend Image
+      - name: Build Frontend Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: false
+          load: true
+          tags: securetasks-frontend:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Trivy Scan Frontend
+      - name: Scan Frontend Image (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'securetasks-frontend:test'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'

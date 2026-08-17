@@ -1,0 +1,23 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# uv
+uv.lock   # keep this if you want reproducible installs; remove if you don't
+
+# Secrets — NEVER commit these
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store

@@ -1,0 +1,35 @@
+# ── Secrets — the most important entries ──────────────────────────────────
+.env
+*.env
+!.env.example      # keep example files
+
+# Terraform state (may contain secrets)
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Node / frontend
+node_modules/
+dist/
+.cache/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# ZAP reports (generated artifacts — stored in CI, not repo)
+zap-report.html
+zap-report.json

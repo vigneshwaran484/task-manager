@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Colour palette ─────────────────────────────────────────────────── */
+  --color-brand-50:  hsl(221 100% 97%);
+  --color-brand-100: hsl(221 96%  92%);
+  --color-brand-200: hsl(221 90%  84%);
+  --color-brand-500: hsl(221 83%  53%);
+  --color-brand-600: hsl(221 83%  45%);
+  --color-brand-700: hsl(221 83%  37%);
+
+  --color-surface:       hsl(220 20% 98%);
+  --color-surface-card:  hsl(0 0% 100%);
+  --color-border:        hsl(220 13% 91%);
+  --color-text-primary:  hsl(222 47% 11%);
+  --color-text-muted:    hsl(215 16% 47%);
+
+  --color-todo:      hsl(215 16% 47%);
+  --color-progress:  hsl(38  92% 50%);
+  --color-done:      hsl(142 71% 45%);
+
+  --color-low:    hsl(142 71% 45%);
+  --color-medium: hsl(38  92% 50%);
+  --color-high:   hsl(0   72% 51%);
+
+  /* ── Typography ─────────────────────────────────────────────────────── */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* ── Radius ──────────────────────────────────────────────────────────── */
+  --radius-card: 0.875rem;
+  --radius-btn:  0.5rem;
+
+  /* ── Shadow ──────────────────────────────────────────────────────────── */
+  --shadow-card: 0 1px 3px hsl(220 13% 69% / 0.12), 0 4px 16px hsl(220 13% 69% / 0.08);
+  --shadow-elevated: 0 4px 24px hsl(220 13% 69% / 0.18);
+}
+
+/* ── Base ────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+body { margin: 0; min-height: 100dvh; }
+
+/* ── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 99px; }
+
+/* ── Focus ring ──────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Animations ──────────────────────────────────────────────────────────── */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-fade-in   { animation: fade-in  0.22s ease both; }
+.animate-slide-in  { animation: slide-in 0.18s ease both; }
+.animate-spin      { animation: spin     0.8s  linear infinite; }

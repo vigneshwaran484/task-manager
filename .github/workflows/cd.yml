@@ -1,0 +1,113 @@
+name: CD Pipeline (Deploy & DAST)
+
+on:
+  push:
+    branches: [ "main" ]
+
+# Requires permissions for OIDC authentication to Azure
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-and-scan:
+    name: Deploy to Azure & ZAP Scan
+    runs-on: ubuntu-latest
+    
+    # Environment defines where this deploys (e.g., Production)
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ── 1. Azure Authentication (OIDC) ──────────────────────────────────────
+      # Uses OIDC federation rather than storing a client secret in GitHub.
+      # This is a major security improvement (no long-lived credentials).
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # ── 2. Infrastructure as Code (Terraform) ───────────────────────────────
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        working-directory: ./terraform
+        run: |
+          terraform init \
+            -backend-config="resource_group_name=${{ secrets.TF_STATE_RG }}" \
+            -backend-config="storage_account_name=${{ secrets.TF_STATE_SA }}" \
+            -backend-config="container_name=tfstate" \
+            -backend-config="key=prod.terraform.tfstate"
+
+      - name: Terraform Apply
+        working-directory: ./terraform
+        run: terraform apply -auto-approve
+
+      # Retrieve Terraform outputs dynamically to use in subsequent steps
+      - name: Get Terraform Outputs
+        working-directory: ./terraform
+        id: tf-outputs
+        run: |
+          echo "ACR_SERVER=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
+          echo "RG_NAME=$(terraform output -raw resource_group_name)" >> $GITHUB_ENV
+          echo "FRONTEND_URL=$(terraform output -raw frontend_url)" >> $GITHUB_ENV
+
+      # ── 3. Build & Push Docker Images ───────────────────────────────────────
+      - name: Login to Azure Container Registry
+        run: az acr login --name ${{ env.ACR_SERVER }}
+
+      # We use the Git SHA as the immutable image tag
+      - name: Build & Push Backend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ env.ACR_SERVER }}/backend:${{ github.sha }}
+
+      - name: Build & Push Frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: ${{ env.ACR_SERVER }}/frontend:${{ github.sha }}
+
+      # ── 4. Deploy to Azure Container Apps ───────────────────────────────────
+      - name: Update Backend Container App
+        run: |
+          az containerapp update \
+            --name ca-backend-sectasks \
+            --resource-group ${{ env.RG_NAME }} \
+            --image ${{ env.ACR_SERVER }}/backend:${{ github.sha }}
+
+      - name: Update Frontend Container App
+        run: |
+          az containerapp update \
+            --name ca-frontend-sectasks \
+            --resource-group ${{ env.RG_NAME }} \
+            --image ${{ env.ACR_SERVER }}/frontend:${{ github.sha }}
+
+      # ── 5. DAST (Dynamic Application Security Testing) ──────────────────────
+      # Wait a few seconds for the new revision to spin up
+      - name: Wait for deployment
+        run: sleep 30
+
+      # OWASP ZAP baseline scan running against the live production URL
+      - name: OWASP ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.12.0
+        with:
+          target: ${{ env.FRONTEND_URL }}
+          rules_file_name: '.zap/rules.tsv' # Optional: define rule exceptions if needed
+          cmd_options: '-a'
+        continue-on-error: true # DAST shouldn't necessarily fail the pipeline if minor issues exist, but should report them
+
+      - name: Upload ZAP Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ZAP-Report
+          path: report_html.html
