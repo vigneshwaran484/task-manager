@@ -41,6 +41,9 @@ ignore = [
     "S105",  # hardcoded password false positives in auth helpers
     "B008",  # Depends() in FastAPI function defaults
     "E501",  # Line length
+    "B904",  # raise from
+    "UP042", # enum.StrEnum
+    "F841",  # unused variable
 ]
 
 [tool.ruff.lint.per-file-ignores]

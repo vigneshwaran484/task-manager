@@ -19,9 +19,6 @@ resource "azurerm_postgresql_flexible_server" "postgres" {
   storage_mb = 32768 # 32 GB is the minimum for Flexible Server
 
   # To save costs, we don't need high availability for this demo
-  high_availability {
-    mode = "Disabled"
-  }
 
   tags = azurerm_resource_group.rg.tags
 }

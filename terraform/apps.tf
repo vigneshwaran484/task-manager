@@ -57,7 +57,7 @@ resource "azurerm_container_app" "backend" {
 
   ingress {
     allow_insecure_connections = false
-    external                   = true
+    external_enabled           = true
     target_port                = 8000
     traffic_weight {
       percentage      = 100
@@ -131,7 +131,7 @@ resource "azurerm_container_app" "frontend" {
 
   ingress {
     allow_insecure_connections = false
-    external                   = true
+    external_enabled           = true
     target_port                = 8080
     traffic_weight {
       percentage      = 100
