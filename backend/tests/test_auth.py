@@ -30,7 +30,7 @@ async def test_register_returns_201():
     from datetime import datetime
     mock_user.created_at = datetime.now(UTC)
 
-    with patch("app.routers.auth.get_db") as mock_get_db:
+    with patch("app.routers.auth.get_db"):
         # Minimal smoke test — full integration tests require a test DB
         pass  # Replace with real DB fixture in a CI matrix with postgres service
 
