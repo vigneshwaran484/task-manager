@@ -12,7 +12,7 @@ WORKDIR /build
 
 # Copy dependency files first so Docker layer cache is reused when only
 # source code changes (not deps).
-COPY pyproject.toml ./
+COPY pyproject.toml uv.lock ./
 # uv sync creates /build/.venv with only production dependencies
 RUN uv sync --no-dev --frozen
 
