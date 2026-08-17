@@ -41,6 +41,10 @@ jobs:
             -backend-config="container_name=tfstate" \
             -backend-config="key=prod.terraform.tfstate"
 
+      - name: Terraform Force Unlock
+        working-directory: ./terraform
+        run: terraform force-unlock -force 16b7d26a-2ed4-3da4-9b44-b4913cc3b315 || true
+
       - name: Terraform Apply
         working-directory: ./terraform
         run: terraform apply -auto-approve
