@@ -23,13 +23,13 @@ from app.database import Base
 
 # ── Enums ─────────────────────────────────────────────────────────────────────
 
-class TaskStatus(str, enum.Enum):
+class TaskStatus(enum.StrEnum):
     TODO = "todo"
     IN_PROGRESS = "in-progress"
     DONE = "done"
 
 
-class TaskPriority(str, enum.Enum):
+class TaskPriority(enum.StrEnum):
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"

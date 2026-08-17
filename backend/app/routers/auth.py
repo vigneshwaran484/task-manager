@@ -101,8 +101,8 @@ async def refresh_access_token(
     )
     try:
         user_id_str = verify_refresh_token(payload.refresh_token)
-    except JWTError:
-        raise credentials_exception
+    except JWTError as err:
+        raise credentials_exception from err
 
     from uuid import UUID
     result = await db.execute(select(User).where(User.id == UUID(user_id_str)))
