@@ -57,6 +57,7 @@ jobs:
           echo "ACR_SERVER=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
           echo "RG_NAME=$(terraform output -raw resource_group_name)" >> $GITHUB_ENV
           echo "FRONTEND_URL=$(terraform output -raw frontend_url)" >> $GITHUB_ENV
+          echo "BACKEND_URL=$(terraform output -raw backend_url)" >> $GITHUB_ENV
           echo "BACKEND_CA_NAME=$(terraform output -raw backend_container_app_name)" >> $GITHUB_ENV
           echo "FRONTEND_CA_NAME=$(terraform output -raw frontend_container_app_name)" >> $GITHUB_ENV
 
@@ -78,6 +79,8 @@ jobs:
           context: ./frontend
           push: true
           tags: ${{ env.ACR_SERVER }}/frontend:${{ github.sha }}
+          build-args: |
+            VITE_API_BASE_URL=${{ env.BACKEND_URL }}
 
       # ── 4. Deploy to Azure Container Apps ───────────────────────────────────
       - name: Update Backend Container App

@@ -81,6 +81,10 @@ resource "azurerm_container_app" "backend" {
         value = "production"
       }
       env {
+        name  = "ALLOWED_ORIGINS"
+        value = "[\"https://${azurerm_container_app.frontend.ingress[0].fqdn}\"]"
+      }
+      env {
         name  = "JWT_ALGORITHM"
         value = "HS256"
       }
