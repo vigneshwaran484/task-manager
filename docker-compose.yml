@@ -25,6 +25,8 @@ services:
     restart: unless-stopped
     env_file:
       - ./backend/.env          # git-ignored; copy from .env.example
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://taskmanager:changeme@db:5432/taskmanager
     ports:
       - "8000:8000"
     depends_on:
