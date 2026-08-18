@@ -6,7 +6,7 @@
 set -e
 
 echo "Running database migrations..."
-alembic upgrade head
+python -m alembic upgrade head
 
 echo "Starting application..."
 exec uvicorn app.main:app \

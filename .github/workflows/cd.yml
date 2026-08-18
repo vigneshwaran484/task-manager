@@ -57,6 +57,8 @@ jobs:
           echo "ACR_SERVER=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
           echo "RG_NAME=$(terraform output -raw resource_group_name)" >> $GITHUB_ENV
           echo "FRONTEND_URL=$(terraform output -raw frontend_url)" >> $GITHUB_ENV
+          echo "BACKEND_CA_NAME=$(terraform output -raw backend_container_app_name)" >> $GITHUB_ENV
+          echo "FRONTEND_CA_NAME=$(terraform output -raw frontend_container_app_name)" >> $GITHUB_ENV
 
       # ── 3. Build & Push Docker Images ───────────────────────────────────────
       - name: Login to Azure Container Registry
@@ -81,14 +83,14 @@ jobs:
       - name: Update Backend Container App
         run: |
           az containerapp update \
-            --name ca-backend-taskmanager \
+            --name ${{ env.BACKEND_CA_NAME }} \
             --resource-group ${{ env.RG_NAME }} \
             --image ${{ env.ACR_SERVER }}/backend:${{ github.sha }}
 
       - name: Update Frontend Container App
         run: |
           az containerapp update \
-            --name ca-frontend-taskmanager \
+            --name ${{ env.FRONTEND_CA_NAME }} \
             --resource-group ${{ env.RG_NAME }} \
             --image ${{ env.ACR_SERVER }}/frontend:${{ github.sha }}
 
