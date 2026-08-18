@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.config import get_settings
-from app.routers import auth, tasks, stats
+from app.routers import auth, stats, tasks
 
 logger = structlog.get_logger()
 

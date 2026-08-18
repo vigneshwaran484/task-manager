@@ -8,7 +8,7 @@ they know the UUID, because the DB query enforces ownership.
 """
 
 import uuid
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
@@ -16,7 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.dependencies import get_current_user
-from app.models import Task, User, TaskStatus
+from app.models import Task, TaskStatus, User
 from app.schemas import TaskCreate, TaskResponse, TaskUpdate
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
@@ -74,7 +74,7 @@ async def update_task(
     """Partial update — only fields provided in the request body are changed."""
     task = await _get_owned_task(task_id, current_user, db)
     update_data = payload.model_dump(exclude_unset=True)
-    
+
     # Handle completed_at logic
     if "status" in update_data:
         if update_data["status"] == TaskStatus.DONE and task.status != TaskStatus.DONE:

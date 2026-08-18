@@ -77,17 +77,27 @@ class Task(Base):
     title: Mapped[str] = mapped_column(String(200), nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[TaskStatus] = mapped_column(
-        Enum(TaskStatus, name="taskstatus", values_callable=lambda obj: [e.value for e in obj]), 
-        default=TaskStatus.TODO, 
-        nullable=False
+        Enum(
+            TaskStatus,
+            name="taskstatus",
+            values_callable=lambda obj: [e.value for e in obj],
+        ),
+        default=TaskStatus.TODO,
+        nullable=False,
     )
     priority: Mapped[TaskPriority] = mapped_column(
-        Enum(TaskPriority, name="taskpriority", values_callable=lambda obj: [e.value for e in obj]),
+        Enum(
+            TaskPriority,
+            name="taskpriority",
+            values_callable=lambda obj: [e.value for e in obj],
+        ),
         default=TaskPriority.MEDIUM,
         nullable=False,
     )
     due_date: Mapped[date | None] = mapped_column(Date, nullable=True)
-    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(UTC),
