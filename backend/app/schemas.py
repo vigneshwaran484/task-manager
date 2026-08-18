@@ -13,6 +13,7 @@ from app.models import TaskPriority, TaskStatus
 
 # ── Auth ──────────────────────────────────────────────────────────────────────
 
+
 class UserRegister(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8, max_length=128)
@@ -39,6 +40,7 @@ class UserResponse(BaseModel):
 
 class TokenPair(BaseModel):
     """Returned on login. Access token is short-lived; refresh rotates it."""
+
     access_token: str
     refresh_token: str
     token_type: str = "bearer"
@@ -55,6 +57,7 @@ class AccessToken(BaseModel):
 
 # ── Tasks ─────────────────────────────────────────────────────────────────────
 
+
 class TaskCreate(BaseModel):
     title: str = Field(min_length=1, max_length=200)
     description: str | None = Field(default=None, max_length=5000)
@@ -65,6 +68,7 @@ class TaskCreate(BaseModel):
 
 class TaskUpdate(BaseModel):
     """All fields optional — supports PATCH semantics."""
+
     title: str | None = Field(default=None, min_length=1, max_length=200)
     description: str | None = Field(default=None, max_length=5000)
     status: TaskStatus | None = None

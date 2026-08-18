@@ -29,7 +29,9 @@ from app.security import (
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED
+)
 async def register(payload: UserRegister, db: AsyncSession = Depends(get_db)) -> User:
     """
     Create a new user account.
@@ -48,7 +50,7 @@ async def register(payload: UserRegister, db: AsyncSession = Depends(get_db)) ->
         hashed_password=hash_password(payload.password),
     )
     db.add(user)
-    await db.flush()   # get the generated UUID before commit
+    await db.flush()  # get the generated UUID before commit
     await db.refresh(user)
     return user
 
@@ -105,6 +107,7 @@ async def refresh_access_token(
         raise credentials_exception
 
     from uuid import UUID
+
     result = await db.execute(select(User).where(User.id == UUID(user_id_str)))
     user = result.scalar_one_or_none()
     if user is None or not user.is_active:

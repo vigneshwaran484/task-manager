@@ -24,7 +24,7 @@ def _build_engine():
     settings = get_settings()
     return create_async_engine(
         settings.DATABASE_URL,
-        pool_pre_ping=True,   # detect stale connections
+        pool_pre_ping=True,  # detect stale connections
         pool_size=5,
         max_overflow=10,
         echo=settings.APP_ENV == "development",

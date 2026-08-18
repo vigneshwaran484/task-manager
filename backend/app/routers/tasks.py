@@ -90,6 +90,7 @@ async def delete_task(
 
 # ── Helper ────────────────────────────────────────────────────────────────────
 
+
 async def _get_owned_task(
     task_id: uuid.UUID,
     current_user: User,
@@ -105,5 +106,7 @@ async def _get_owned_task(
     )
     task = result.scalar_one_or_none()
     if task is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
+        )
     return task

@@ -20,6 +20,7 @@ def anyio_backend():
 
 # ── Register ──────────────────────────────────────────────────────────────────
 
+
 @pytest.mark.asyncio
 async def test_register_returns_201():
     """Happy path: valid email + strong password creates a user."""
@@ -28,6 +29,7 @@ async def test_register_returns_201():
     mock_user.email = "test@example.com"
     mock_user.is_active = True
     from datetime import datetime
+
     mock_user.created_at = datetime.now(UTC)
 
     with patch("app.routers.auth.get_db") as mock_get_db:
@@ -58,6 +60,7 @@ async def test_short_password_rejected():
 
 
 # ── Health ────────────────────────────────────────────────────────────────────
+
 
 @pytest.mark.asyncio
 async def test_health_endpoint():

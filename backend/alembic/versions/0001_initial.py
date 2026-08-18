@@ -9,10 +9,7 @@ from collections.abc import Sequence
 
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
-task_status_enum = postgresql.ENUM('todo', 'in-progress', 'done', name='taskstatus')
-task_priority_enum = postgresql.ENUM('low', 'medium', 'high', name='taskpriority')
-task_status_enum.create(op.get_bind(), checkfirst=True)
-task_priority_enum.create(op.get_bind(), checkfirst=True)
+
 from alembic import op
 
 revision: str = "0001_initial"
@@ -22,17 +19,6 @@ depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
-    # ── Enums ─────────────────────────────────────────────────────────────
-    taskstatus = postgresql.ENUM(
-        "todo", "in-progress", "done", name="taskstatus", create_type=False
-    )
-    taskstatus.create(op.get_bind(), checkfirst=True)
-
-    taskpriority = postgresql.ENUM(
-        "low", "medium", "high", name="taskpriority", create_type=False
-    )
-    taskpriority.create(op.get_bind(), checkfirst=True)
-
     # ── Users ─────────────────────────────────────────────────────────────
     op.create_table(
         "users",

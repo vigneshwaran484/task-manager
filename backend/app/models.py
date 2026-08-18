@@ -23,6 +23,7 @@ from app.database import Base
 
 # ── Enums ─────────────────────────────────────────────────────────────────────
 
+
 class TaskStatus(str, enum.Enum):
     TODO = "todo"
     IN_PROGRESS = "in-progress"
@@ -37,13 +38,16 @@ class TaskPriority(str, enum.Enum):
 
 # ── Models ────────────────────────────────────────────────────────────────────
 
+
 class User(Base):
     __tablename__ = "users"
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
-    email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
+    email: Mapped[str] = mapped_column(
+        String(255), unique=True, index=True, nullable=False
+    )
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
@@ -76,7 +80,9 @@ class Task(Base):
         Enum(TaskStatus, name="taskstatus"), default=TaskStatus.TODO, nullable=False
     )
     priority: Mapped[TaskPriority] = mapped_column(
-        Enum(TaskPriority, name="taskpriority"), default=TaskPriority.MEDIUM, nullable=False
+        Enum(TaskPriority, name="taskpriority"),
+        default=TaskPriority.MEDIUM,
+        nullable=False,
     )
     due_date: Mapped[date | None] = mapped_column(Date, nullable=True)
     created_at: Mapped[datetime] = mapped_column(

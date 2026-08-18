@@ -15,9 +15,9 @@ class Settings(BaseSettings):
     DATABASE_URL: str  # postgresql+asyncpg://user:pass@host:5432/db
 
     # ── JWT ───────────────────────────────────────────────────────────────
-    JWT_SECRET_KEY: str          # pulled from Key Vault in prod
+    JWT_SECRET_KEY: str  # pulled from Key Vault in prod
     JWT_ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 15   # short-lived
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 15  # short-lived
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
     # ── App ───────────────────────────────────────────────────────────────
