@@ -13,12 +13,12 @@ dependencies = [
     "alembic>=1.13.0",
     # Auth
     "python-jose[cryptography]>=3.3.0",
-    "passlib[bcrypt]>=1.7.4",
     # Settings / validation
     "pydantic-settings>=2.3.0",
     "python-multipart>=0.0.9",  # form data for OAuth2PasswordRequestForm
     # Observability (optional but worth mentioning)
     "structlog>=24.1.0",
+    "bcrypt>=5.0.0",
 ]
 
 [project.optional-dependencies]

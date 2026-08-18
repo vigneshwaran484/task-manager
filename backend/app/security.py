@@ -16,23 +16,23 @@ Security decisions worth explaining in a viva:
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
+import bcrypt
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 
 from app.config import get_settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
-# ── Password ──────────────────────────────────────────────────────────────────
-
 
 def hash_password(plain: str) -> str:
-    return pwd_context.hash(plain)
+    # Use bcrypt directly: hashpw expects and returns bytes, so encode/decode is needed.
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(plain.encode("utf-8"), salt).decode("utf-8")
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
+    try:
+        return bcrypt.checkpw(plain.encode("utf-8"), hashed.encode("utf-8"))
+    except ValueError:
+        return False
 
 
 # ── JWT ───────────────────────────────────────────────────────────────────────
