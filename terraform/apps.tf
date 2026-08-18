@@ -71,7 +71,7 @@ resource "azurerm_container_app" "backend" {
 
     container {
       name   = "backend"
-      image  = "${azurerm_container_registry.acr.login_server}/backend:${var.backend_image_tag}"
+      image  = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
       cpu    = 0.25
       memory = "0.5Gi"
 
@@ -97,6 +97,12 @@ resource "azurerm_container_app" "backend" {
         secret_name = "jwt-secret-key"
       }
     }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      template[0].container[0].image
+    ]
   }
 
   # Map the Azure Key Vault references to the Container App's secret store
@@ -145,10 +151,16 @@ resource "azurerm_container_app" "frontend" {
 
     container {
       name   = "frontend"
-      image  = "${azurerm_container_registry.acr.login_server}/frontend:${var.frontend_image_tag}"
+      image  = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
       cpu    = 0.25
       memory = "0.5Gi"
     }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      template[0].container[0].image
+    ]
   }
 
   depends_on = [azurerm_role_assignment.acr_pull]

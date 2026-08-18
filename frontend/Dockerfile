@@ -30,6 +30,9 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Expose the default unprivileged port
+USER root
+RUN apk update && apk upgrade
+USER nginx
 EXPOSE 8080
 
 # Health check to ensure Nginx is serving traffic

@@ -52,6 +52,7 @@ COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Drop to non-root
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
 USER appuser
 
 EXPOSE 8000
