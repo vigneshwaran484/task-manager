@@ -21,6 +21,13 @@ resource "azurerm_postgresql_flexible_server" "postgres" {
   # To save costs, we don't need high availability for this demo
 
   tags = azurerm_resource_group.rg.tags
+
+  lifecycle {
+    ignore_changes = [
+      zone,
+      high_availability[0].standby_availability_zone
+    ]
+  }
 }
 
 # ── Firewall Rules ────────────────────────────────────────────────────────
