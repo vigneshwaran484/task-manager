@@ -9,12 +9,12 @@ output "acr_login_server" {
 }
 
 output "backend_url" {
-  value       = "https://${azurerm_container_app.backend.latest_revision_fqdn}"
+  value       = "https://${azurerm_container_app.backend.ingress[0].fqdn}"
   description = "Public URL of the backend API"
 }
 
 output "frontend_url" {
-  value       = "https://${azurerm_container_app.frontend.latest_revision_fqdn}"
+  value       = "https://${azurerm_container_app.frontend.ingress[0].fqdn}"
   description = "Public URL of the frontend application"
 }
 
