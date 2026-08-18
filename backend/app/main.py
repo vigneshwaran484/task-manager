@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.config import get_settings
-from app.routers import auth, tasks
+from app.routers import auth, tasks, stats
 
 logger = structlog.get_logger()
 
@@ -64,6 +64,7 @@ def create_app() -> FastAPI:
     # ── Routers ───────────────────────────────────────────────────────────
     app.include_router(auth.router, prefix="/api/v1")
     app.include_router(tasks.router, prefix="/api/v1")
+    app.include_router(stats.router, prefix="/api/v1")
 
     # ── Health check ──────────────────────────────────────────────────────
     @app.get("/health", tags=["ops"])

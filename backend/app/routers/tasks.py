@@ -8,6 +8,7 @@ they know the UUID, because the DB query enforces ownership.
 """
 
 import uuid
+from datetime import datetime, UTC
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
@@ -15,7 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.dependencies import get_current_user
-from app.models import Task, User
+from app.models import Task, User, TaskStatus
 from app.schemas import TaskCreate, TaskResponse, TaskUpdate
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
@@ -42,7 +43,10 @@ async def create_task(
     current_user: User = Depends(get_current_user),
 ) -> Task:
     """Create a new task owned by the current user."""
-    task = Task(**payload.model_dump(), owner_id=current_user.id)
+    data = payload.model_dump()
+    if data.get("status") == TaskStatus.DONE:
+        data["completed_at"] = datetime.now(UTC)
+    task = Task(**data, owner_id=current_user.id)
     db.add(task)
     await db.flush()
     await db.refresh(task)
@@ -70,6 +74,14 @@ async def update_task(
     """Partial update — only fields provided in the request body are changed."""
     task = await _get_owned_task(task_id, current_user, db)
     update_data = payload.model_dump(exclude_unset=True)
+    
+    # Handle completed_at logic
+    if "status" in update_data:
+        if update_data["status"] == TaskStatus.DONE and task.status != TaskStatus.DONE:
+            update_data["completed_at"] = datetime.now(UTC)
+        elif update_data["status"] != TaskStatus.DONE:
+            update_data["completed_at"] = None
+
     for field, value in update_data.items():
         setattr(task, field, value)
     await db.flush()

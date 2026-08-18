@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Plus, LayoutList } from 'lucide-react'
+import { Plus, LayoutList, Activity, CheckSquare } from 'lucide-react'
 import { tasksApi } from '../api/endpoints'
 import { TaskItem } from '../components/TaskItem'
 import { TaskForm } from '../components/TaskForm'
+import { ProgressDashboard } from '../components/ProgressDashboard'
 import { Button } from '../components/ui'
 
 export default function Dashboard() {
@@ -11,6 +12,7 @@ export default function Dashboard() {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingTask, setEditingTask] = useState(null)
   const [filter, setFilter] = useState('all') // all, todo, done
+  const [view, setView] = useState('tasks') // tasks, progress
 
   const { data: tasks = [], isLoading, isError } = useQuery({
     queryKey: ['tasks'],
@@ -24,6 +26,7 @@ export default function Dashboard() {
     mutationFn: (newTask) => tasksApi.create(newTask),
     onSuccess: () => {
       queryClient.invalidateQueries(['tasks'])
+      queryClient.invalidateQueries(['stats'])
       closeForm()
     }
   })
@@ -32,13 +35,17 @@ export default function Dashboard() {
     mutationFn: ({ id, ...data }) => tasksApi.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries(['tasks'])
+      queryClient.invalidateQueries(['stats'])
       closeForm()
     }
   })
 
   const deleteMutation = useMutation({
     mutationFn: (id) => tasksApi.remove(id),
-    onSuccess: () => queryClient.invalidateQueries(['tasks'])
+    onSuccess: () => {
+      queryClient.invalidateQueries(['tasks'])
+      queryClient.invalidateQueries(['stats'])
+    }
   })
 
   const openNewForm = () => {
@@ -70,20 +77,42 @@ export default function Dashboard() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text-primary)]">
-            My Tasks
+            {view === 'tasks' ? 'My Tasks' : 'My Progress'}
           </h1>
           <p className="text-sm text-[var(--color-text-muted)] mt-1">
-            Manage your daily tasks securely
+            {view === 'tasks' ? 'Manage your daily tasks securely' : 'Track your streaks and achievements'}
           </p>
         </div>
         
-        <Button onClick={openNewForm} className="sm:w-auto">
-          <Plus size={18} /> New Task
-        </Button>
+        <div className="flex items-center gap-3">
+          <div className="bg-gray-100 p-1 rounded-lg flex text-sm">
+            <button 
+              onClick={() => setView('tasks')}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-md transition-colors ${view === 'tasks' ? 'bg-white shadow-sm text-gray-900 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              <CheckSquare size={16} /> Tasks
+            </button>
+            <button 
+              onClick={() => setView('progress')}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-md transition-colors ${view === 'progress' ? 'bg-white shadow-sm text-gray-900 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              <Activity size={16} /> Progress
+            </button>
+          </div>
+          {view === 'tasks' && (
+            <Button onClick={openNewForm} className="sm:w-auto">
+              <Plus size={18} /> New Task
+            </Button>
+          )}
+        </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex gap-2 mb-6 border-b border-[var(--color-border)] pb-4">
+      {view === 'progress' ? (
+        <ProgressDashboard />
+      ) : (
+        <>
+          {/* Filters */}
+          <div className="flex gap-2 mb-6 border-b border-[var(--color-border)] pb-4">
         {['all', 'todo', 'done'].map((f) => (
           <button
             key={f}
@@ -149,6 +178,8 @@ export default function Dashboard() {
             />
           ))}
         </div>
+      )}
+      </>
       )}
 
       {/* Modal */}

@@ -26,3 +26,8 @@ export const tasksApi = {
   update: (id, data)   => api.patch(`/tasks/${id}`, data),
   remove: (id)         => api.delete(`/tasks/${id}`),
 }
+
+// ── Stats ─────────────────────────────────────────────────────────────────
+export const statsApi = {
+  get: () => api.get('/stats/'),
+}
