@@ -50,21 +50,21 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center p-4 bg-[--color-surface] animate-fade-in">
+    <div className="min-h-dvh flex flex-col items-center justify-center p-4 bg-[var(--color-surface)] animate-fade-in">
       <div className="w-full max-w-sm mb-8 flex flex-col items-center gap-2">
-        <div className="w-12 h-12 rounded-full bg-[--color-brand-100] flex items-center justify-center mb-2">
-          <ShieldCheck size={28} className="text-[--color-brand-600]" strokeWidth={2.5} />
+        <div className="w-12 h-12 rounded-full bg-[var(--color-brand-100)] flex items-center justify-center mb-2">
+          <ShieldCheck size={28} className="text-[var(--color-brand-600)]" strokeWidth={2.5} />
         </div>
-        <h1 className="text-2xl font-bold tracking-tight text-[--color-text-primary]">
+        <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text-primary)]">
           Create Account
         </h1>
-        <p className="text-sm text-[--color-text-muted]">
+        <p className="text-sm text-[var(--color-text-muted)]">
           Join Task Manager to manage your work
         </p>
       </div>
 
       <div 
-        className="w-full max-w-sm p-6 rounded-[--radius-card] bg-[--color-surface-card]"
+        className="w-full max-w-sm p-6 rounded-[--radius-card] bg-[var(--color-surface-card)]"
         style={{ boxShadow: 'var(--shadow-elevated)' }}
       >
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -112,7 +112,7 @@ export default function Register() {
             error={fieldErrors.confirmPassword}
           />
           
-          <p className="text-xs text-[--color-text-muted] px-1">
+          <p className="text-xs text-[var(--color-text-muted)] px-1">
             Password must be 8+ characters with at least one uppercase letter and one number.
           </p>
 
@@ -121,9 +121,9 @@ export default function Register() {
           </Button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-[--color-text-muted]">
+        <div className="mt-6 text-center text-sm text-[var(--color-text-muted)]">
           Already have an account?{' '}
-          <Link to="/login" className="font-medium text-[--color-brand-600] hover:underline">
+          <Link to="/login" className="font-medium text-[var(--color-brand-600)] hover:underline">
             Sign in
           </Link>
         </div>

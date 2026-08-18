@@ -69,10 +69,10 @@ export default function Dashboard() {
     <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-[--color-text-primary]">
+          <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text-primary)]">
             My Tasks
           </h1>
-          <p className="text-sm text-[--color-text-muted] mt-1">
+          <p className="text-sm text-[var(--color-text-muted)] mt-1">
             Manage your daily tasks securely
           </p>
         </div>
@@ -83,7 +83,7 @@ export default function Dashboard() {
       </div>
 
       {/* Filters */}
-      <div className="flex gap-2 mb-6 border-b border-[--color-border] pb-4">
+      <div className="flex gap-2 mb-6 border-b border-[var(--color-border)] pb-4">
         {['all', 'todo', 'done'].map((f) => (
           <button
             key={f}
@@ -108,19 +108,19 @@ export default function Dashboard() {
       {/* Task List */}
       {isLoading ? (
         <div className="flex justify-center py-12">
-          <span className="animate-spin block w-8 h-8 border-2 border-[--color-brand-500] border-t-transparent rounded-full" />
+          <span className="animate-spin block w-8 h-8 border-2 border-[var(--color-brand-500)] border-t-transparent rounded-full" />
         </div>
       ) : isError ? (
         <div className="p-4 text-center rounded-[--radius-card] bg-red-50 text-red-600 border border-red-100">
           Failed to load tasks. Please try refreshing the page.
         </div>
       ) : filteredTasks.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center border-2 border-dashed rounded-[--radius-card] border-[--color-border]">
-          <div className="w-12 h-12 rounded-full bg-[--color-surface] flex items-center justify-center mb-3">
-            <LayoutList size={24} className="text-[--color-text-muted]" />
+        <div className="flex flex-col items-center justify-center py-16 text-center border-2 border-dashed rounded-[--radius-card] border-[var(--color-border)]">
+          <div className="w-12 h-12 rounded-full bg-[var(--color-surface)] flex items-center justify-center mb-3">
+            <LayoutList size={24} className="text-[var(--color-text-muted)]" />
           </div>
-          <h3 className="text-base font-medium text-[--color-text-primary] mb-1">No tasks found</h3>
-          <p className="text-sm text-[--color-text-muted] max-w-[250px]">
+          <h3 className="text-base font-medium text-[var(--color-text-primary)] mb-1">No tasks found</h3>
+          <p className="text-sm text-[var(--color-text-muted)] max-w-[250px]">
             {filter === 'all' 
               ? "You don't have any tasks yet. Create one to get started."
               : `You don't have any ${filter} tasks right now.`}

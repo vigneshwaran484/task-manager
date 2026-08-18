@@ -19,8 +19,8 @@ export function GuestRoute() {
 
 function FullPageSpinner() {
   return (
-    <div className="min-h-dvh flex items-center justify-center bg-[--color-surface]">
-      <span className="animate-spin block w-8 h-8 border-2 border-[--color-brand-500] border-t-transparent rounded-full" />
+    <div className="min-h-dvh flex items-center justify-center bg-[var(--color-surface)]">
+      <span className="animate-spin block w-8 h-8 border-2 border-[var(--color-brand-500)] border-t-transparent rounded-full" />
     </div>
   )
 }

@@ -26,7 +26,7 @@ export function TaskItem({ task, onUpdate, onDelete }) {
 
   return (
     <div 
-      className={`group relative flex items-start gap-4 p-4 rounded-[--radius-card] bg-[--color-surface-card] border transition-all duration-200 animate-slide-in ${
+      className={`group relative flex items-start gap-4 p-4 rounded-[--radius-card] bg-[var(--color-surface-card)] border transition-all duration-200 animate-slide-in ${
         isDone ? 'opacity-75' : ''
       }`}
       style={{ 
@@ -106,7 +106,7 @@ export function TaskItem({ task, onUpdate, onDelete }) {
 
         {menuOpen && (
           <div 
-            className="absolute right-0 top-full mt-1 w-36 py-1 rounded-[--radius-btn] bg-[--color-surface-card] z-10 animate-fade-in"
+            className="absolute right-0 top-full mt-1 w-36 py-1 rounded-[--radius-btn] bg-[var(--color-surface-card)] z-10 animate-fade-in"
             style={{ 
               border: '1px solid var(--color-border)',
               boxShadow: 'var(--shadow-elevated)'
